@@ -61,7 +61,8 @@ public class Lexer {
                         movePastSpace();
                         return new Token("=", Token.TokenType.OPERATOR);
                     default:
-                        throw new Error("Illegal token encountered: '" + currentChar + "'");
+                        System.err.println("Error! Illegal token encountered: '" + currentChar + "'");
+                        System.exit(1);
                 }
             }
         } while (true);
@@ -90,7 +91,8 @@ public class Lexer {
     public String getNumberSequence() {
         String number = "";
         if (!Character.isDigit(currentChar)) {
-            throw new Error("Expected number, got non-numerical charater");
+            System.err.println("Error! Expected number, got non-numerical charater");
+            System.exit(1);
         }
         while (Character.isDigit(currentChar)) {
             number += currentChar;

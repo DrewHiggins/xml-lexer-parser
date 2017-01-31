@@ -39,28 +39,34 @@ public class Parser {
         }
 
         if (token.getTokenType() == Token.TokenType.KEYWORD && token.getValue().equals("WHERE")) {
+            System.out.println("\t<Keyword>WHERE</Keyword>");
             token = lexer.nextToken();
             parseCondList();
         } else if (token.getTokenType() != Token.TokenType.EOI) {
-            throw new Error("Expecting EOI or Keyword(WHERE), got: " + token.toString());
+            System.err.println("Error! Expecting EOI or Keyword(WHERE), got: " + token.toString());
+            System.exit(1);
         }
         System.out.println("</Query>");
     }
 
     public void parseIdList() {
-        System.out.println("\t<IDList>");
+        System.out.println("\t<IdList>");
         if (token.getTokenType() != Token.TokenType.ID) {
-            throw new Error("Expected ID, got: " + token.toString());
+            System.err.println("Error! Expected ID, got: " + token.toString());
+            System.exit(1);
         }
         while (token.getTokenType() == Token.TokenType.ID) {
-            System.out.println("\t\t<id>" + token.getValue() + "</id>");
+            System.out.println("\t\t<Id>" + token.getValue() + "</Id>");
             token = lexer.nextToken();
             if (token.getTokenType() == Token.TokenType.COMMA) {
                 System.out.println("\t\t<Comma>,</Comma>");
                 token = lexer.nextToken();
+            } else if (token.getTokenType() != Token.TokenType.KEYWORD){
+                System.err.println("Error! Expected comma, got: "  + token.toString());
+                System.exit(1);
             }
         }
-        System.out.println("\t</IDList>");
+        System.out.println("\t</IdList>");
     }
 
     public void parseCondList() {
@@ -78,17 +84,19 @@ public class Parser {
     public void parseCond() {
         System.out.println("\t\t<Cond>");
         if (token.getTokenType() == Token.TokenType.ID) {
-            System.out.println("\t\t\t<id>" + token.getValue() + "</id>");
+            System.out.println("\t\t\t<Id>" + token.getValue() + "</Id>");
             token = lexer.nextToken();
         } else {
-            throw new Error("Expected ID, got: " + token.toString());
+            System.err.println("Error! Expected ID, got: " + token.toString());
+            System.exit(1);
         }
 
         if (token.getTokenType() == Token.TokenType.OPERATOR) {
             System.out.println("\t\t\t<Operator>" + token.getValue() + "</Operator>");
             token = lexer.nextToken();
         } else {
-            throw new Error("Expected OPERATOR, got: " + token.toString());
+            System.err.println("Error! Expected OPERATOR, got: " + token.toString());
+            System.exit(1);
         }
 
         parseTerm();
@@ -108,7 +116,8 @@ public class Parser {
                 System.out.println("\t\t\t\t<Float>" + token.getValue() + "</Float>");
                 break;
             default:
-                throw new Error("Expected type ID, FLOAT, or INT, got: " + token.toString());
+                System.err.println("Error! Expected type ID, FLOAT, or INT, got: " + token.toString());
+                System.exit(1);
         }
         token = lexer.nextToken();
         System.out.println("\t\t\t</Term>");
